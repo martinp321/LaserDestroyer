@@ -3,7 +3,7 @@ using System.Collections;
 
 public class FiringLogic : MonoBehaviour
 {
-
+    public GameObject smokePrefab;
     public GameObject laserPrefab;
     public int fireDirection = 1;
     public float firingRate;
@@ -23,6 +23,7 @@ public class FiringLogic : MonoBehaviour
                 laser.Hit();
                 if (health <= 0)
                 {
+                    Instantiate(smokePrefab, transform.position, Quaternion.identity);
                     Destroy(gameObject);
                 }
             }

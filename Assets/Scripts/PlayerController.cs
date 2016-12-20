@@ -4,6 +4,7 @@ using System.Collections;
 public class PlayerController : FiringLogic
 {
     public float padding = 1f;
+    public ParticleSystem thrustPrefab;
 
     private Rigidbody2D body;
     private static float speed = 8f;
@@ -78,6 +79,7 @@ public class PlayerController : FiringLogic
         if (Input.GetKey(KeyCode.UpArrow))
         {
             body.velocity += moveUp;
+            Instantiate(thrustPrefab, transform.position, Quaternion.identity);
         }
 
         if (Input.GetKey(KeyCode.DownArrow))
