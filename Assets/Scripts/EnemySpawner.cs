@@ -19,12 +19,17 @@ public class EnemySpawner : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        StartCoroutine(CreateSpawns());
+        InvokeRepeating("SpawnController", .00001f, 5f);
 
         offset = (width / 2);
 
         minX = Camera.main.ViewportToWorldPoint(new Vector2(0f, 0f)).x;
         maxX = Camera.main.ViewportToWorldPoint(new Vector2(1f, 0f)).x;
+    }
+
+    private void SpawnController()
+    {
+        StartCoroutine(CreateSpawns());
     }
 
     private void OnDrawGizmos()
@@ -36,14 +41,25 @@ public class EnemySpawner : MonoBehaviour
     {
         foreach (Transform child in transform)
         {
-            GameObject enemy = Instantiate(enemyPrefab, child.transform.position, Quaternion.identity) as GameObject;
-            enemy.transform.parent = child;
-            yield return new WaitForSeconds(delayBetweenSpawns);
+            if (child.childCount == 0)
+                CreateSpawn(child);
+            yield return new WaitForSeconds(Random.Range(1f, delayBetweenSpawns));
         }
+    }
+
+    private void CreateSpawn(Transform child)
+    {
+        GameObject enemy = Instantiate(enemyPrefab, child.transform.position, Quaternion.identity) as GameObject;
+        enemy.transform.parent = child;
     }
 
     // Update is called once per frame
     void Update()
+    {
+        MoveFormation();
+    }
+
+    private void MoveFormation()
     {
         float leftMost = transform.position.x - offset;
         float rightMost = transform.position.x + offset;

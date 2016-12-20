@@ -1,14 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : FiringLogic
 {
-    public GameObject laserPrefab;
     public float padding = 1f;
-    public float firingRate;
 
     private Rigidbody2D body;
-    private static float speed = 5f;
+    private static float speed = 8f;
     private Vector2 moveLeft;
     private Vector2 moveRight;
     private Vector2 moveUp;
@@ -22,7 +20,6 @@ public class PlayerController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        BoxCollider2D collider = GetComponent<BoxCollider2D>();
         minX = Camera.main.ViewportToWorldPoint(new Vector2(0f, 0f)).x + padding;
         maxX = Camera.main.ViewportToWorldPoint(new Vector2(1f, 0f)).x - padding;
 
@@ -41,7 +38,13 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        FiringMechanism();
+        MovePlayer();
+        CheckBoundaries();
+    }
 
+    private void FiringMechanism()
+    {
         if (Input.GetKeyDown(KeyCode.Space))
         {
             InvokeRepeating("Fire", .000001f, firingRate);
@@ -51,8 +54,17 @@ public class PlayerController : MonoBehaviour
         {
             CancelInvoke("Fire");
         }
+    }
 
+    private void CheckBoundaries()
+    {
+        float xPos = Mathf.Clamp(transform.position.x, minX, maxX);
+        float yPos = Mathf.Clamp(transform.position.y, minY, maxY);
+        transform.position = new Vector2(xPos, yPos);
+    }
 
+    private void MovePlayer()
+    {
         if (Input.GetKey(KeyCode.LeftArrow))
         {
             body.velocity += moveLeft;
@@ -72,16 +84,5 @@ public class PlayerController : MonoBehaviour
         {
             body.velocity += moveDown;
         }
-
-        float xPos = Mathf.Clamp(transform.position.x, minX, maxX);
-        float yPos = Mathf.Clamp(transform.position.y, minY, maxY);
-        transform.position = new Vector2(xPos, yPos);
-    }
-
-    private void Fire()
-    {
-        Vector3 vectorOffset = new Vector3(0f, -0.7f, 0f);
-        GameObject laser = Instantiate(laserPrefab, transform.position - vectorOffset, Quaternion.identity) as GameObject;
-        laser.GetComponent<Rigidbody2D>().velocity += new Vector2(0f, 10f);
     }
 }
