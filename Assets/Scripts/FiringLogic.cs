@@ -10,6 +10,8 @@ public class FiringLogic : MonoBehaviour
 
     public float health = 101f;
 
+    private ScoreKeeper scoreKeeper;
+
     private void OnTriggerEnter2D(Collider2D collider)
     {
         if (gameObject.tag == "Laser" && collider.tag == "Enemy Laser") return;
@@ -24,6 +26,7 @@ public class FiringLogic : MonoBehaviour
                 if (health <= 0)
                 {
                     Instantiate(smokePrefab, transform.position, Quaternion.identity);
+                    //scoreKeeper.AddToScore(1);
                     Destroy(gameObject);
                 }
             }
@@ -38,7 +41,7 @@ public class FiringLogic : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-
+        scoreKeeper = GameObject.FindObjectOfType<ScoreKeeper>();
     }
 
     // Update is called once per frame
